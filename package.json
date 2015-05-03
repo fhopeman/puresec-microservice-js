@@ -1,0 +1,23 @@
+{
+  "name": "puresec-microservice-js",
+  "version": "0.1.0",
+  "description": "microservice utilities for the puresec eco system",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://fhopeman@github.com/fhopeman/puresec-microservice-js.git"
+  },
+  "author": "Fabian Hoffmann",
+  "bugs": {
+    "url": "https://github.com/fhopeman/puresec-microservice-js/issues"
+  },
+  "homepage": "https://github.com/fhopeman/puresec-microservice-js#readme",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "~0.11.1",
+    "grunt-mocha-test": "^0.12.7",
+    "mocha": "^2.2.4",
+    "sinon": "^1.14.1"
+  }
+}
