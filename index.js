@@ -3,6 +3,11 @@ var request = require("request");
 
 var utils = function() {
 
+    /**
+     * Resolves the current IPv4 address of the application.
+     *
+     * @returns IPv4 address.
+     */
     var currentAddress = function() {
         var networkInterfaces = os.networkInterfaces( );
         for (var networkInterface in networkInterfaces) {
@@ -17,8 +22,31 @@ var utils = function() {
         }
     };
 
+    var healthCheckBody = function(customCallback) {
+        // provide the health check function which is used from nodejs health check endpoint
+        // and add custom callback to it
+        return function(req, res) {
+            if (customCallback) {
+                customCallback(req, res);
+            }
+            res.send("UP");
+        };
+    };
+
+    /**
+     * Adds a health check to a nodejs application object.
+     *
+     * @param app nodejs application.
+     * @param customCallback optional callback which will be executed if
+     *                       the health check is called.
+     */
+    var addHealthCheck = function(app, customCallback) {
+        app.get("/health", healthCheckBody(customCallback));
+    };
+
     return {
-        currentAddress: currentAddress
+        currentAddress: currentAddress,
+        addHealthCheck: addHealthCheck
     };
 };
 
@@ -35,7 +63,7 @@ var master = function(masterUrl) {
      *                - onSuccess (optional): on success callback function.
      *                - onError (optional): on error callback function.
      */
-    var register = function (options) {
+    var register = function(options) {
         request.post({
             uri: masterUrl + "/alarm/register/" + options.type,
             form: {
