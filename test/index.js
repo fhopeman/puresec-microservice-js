@@ -53,15 +53,15 @@ describe("utils", function(){
             var appSpy = sinon.spy(app, "get");
 
             // when
-            utils.addHealthCheck(app);
+            utils.registerHealthCheckEndpoint(app);
 
             // then
             assert(appSpy.withArgs("/health", sinon.match.func).calledOnce);
         });
 
-        it("should set up health check body and call custom callback", function() {
+        it("should set up health check body and call custom action", function() {
             // given
-            var customCallbackSpy = sinon.spy();
+            var customActionSpy = sinon.spy();
             var res = {send: function() {}};
             var resSpy = sinon.spy(res, "send");
             var app = {
@@ -71,23 +71,23 @@ describe("utils", function(){
             };
 
             // when
-            utils.addHealthCheck(app, customCallbackSpy);
+            utils.registerHealthCheckEndpoint(app, customActionSpy);
 
             // then
-            assert(customCallbackSpy.calledOnce);
+            assert(customActionSpy.calledOnce);
             assert(resSpy.withArgs("UP").calledOnce);
         });
 
-        it("should set up health check body and don't call custom callback if undefined", function() {
+        it("should set up health check body and don't call custom action if undefined", function() {
             // given
             var app = {
-                get: function(path, healthCheckBody) {
-                    healthCheckBody({}, {send: function() {}});
+                get: function(path, healthCheckAction) {
+                    healthCheckAction({}, {send: function() {}});
                 }
             };
 
             // when
-            utils.addHealthCheck(app, undefined);
+            utils.registerHealthCheckEndpoint(app, undefined);
 
             // then
             // nothing to check, will fail if undefined would be executed
@@ -103,41 +103,41 @@ describe("utils", function(){
             var appSpy = sinon.spy(app, "post");
 
             // when
-            utils.addNotifyEndpoint(app);
+            utils.registerNotificationEndpoint(app);
 
             // then
             assert(appSpy.withArgs("/notify", sinon.match.func).calledOnce);
         });
 
-        it("should set up notify body and call custom callback", function() {
+        it("should set up notify body and call custom action", function() {
             // given
-            var customCallbackSpy = sinon.spy();
+            var customActionSpy = sinon.spy();
             var res = {send: function() {}};
             var resSpy = sinon.spy(res, "send");
             var app = {
-                post: function(path, notifyBody) {
-                    notifyBody({}, res);
+                post: function(path, notifyAction) {
+                    notifyAction({}, res);
                 }
             };
 
             // when
-            utils.addNotifyEndpoint(app, customCallbackSpy);
+            utils.registerNotificationEndpoint(app, customActionSpy);
 
             // then
-            assert(customCallbackSpy.calledOnce);
+            assert(customActionSpy.calledOnce);
             assert(resSpy.withArgs("OK").calledOnce);
         });
 
-        it("should set up notify body and don't call custom callback if undefined", function() {
+        it("should set up notify body and don't call custom action if undefined", function() {
             // given
             var app = {
-                post: function(path, notifyBody) {
-                    notifyBody({}, {send: function() {}});
+                post: function(path, notificationAction) {
+                    notificationAction({}, {send: function() {}});
                 }
             };
 
             // when
-            utils.addNotifyEndpoint(app, undefined);
+            utils.registerNotificationEndpoint(app, undefined);
 
             // then
             // nothing to check, will fail if undefined would be executed

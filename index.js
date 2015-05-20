@@ -22,12 +22,12 @@ var utils = function() {
         }
     };
 
-    var healthCheckBody = function(customCallback) {
+    var healthCheckAction = function(customAction) {
         // provide the health check function which is used from nodejs health check endpoint
-        // and add custom callback to it
+        // and add custom action to it
         return function(req, res) {
-            if (customCallback) {
-                customCallback(req, res);
+            if (customAction) {
+                customAction(req, res);
             }
             res.send("UP");
         };
@@ -37,19 +37,18 @@ var utils = function() {
      * Adds a health check to a nodejs application object.
      *
      * @param app nodejs application.
-     * @param customCallback optional callback which will be executed if
-     *                       the health check is called.
+     * @param customAction optional callback which will be executed if
+     *                     the health check is called.
      */
-    var addHealthCheck = function(app, customCallback) {
-        app.get("/health", healthCheckBody(customCallback));
+    var registerHealthCheckEndpoint = function(app, customAction) {
+        app.get("/health", healthCheckAction(customAction));
     };
 
-    var notifyBody = function(customCallback) {
-        // enhance the notification api with a custom
-        // callback
+    var notificationAction = function(customAction) {
+        // enhance the notification api with a custom action
         return function(req, res) {
-            if (customCallback) {
-                customCallback(req, res);
+            if (customAction) {
+                customAction(req, res);
             }
             res.send("OK");
         };
@@ -59,17 +58,17 @@ var utils = function() {
      * Adds a notification endpoint.
      *
      * @param app nodejs application.
-     * @param customCallback optional callback which will be executed if
-     *                       the notification is received.
+     * @param customAction optional callback which will be executed if
+     *                     the notification is received.
      */
-    var addNotifyEndpoint = function(app, customCallback) {
-        app.post("/notify", notifyBody(customCallback));
+    var registerNotificationEndpoint = function(app, customAction) {
+        app.post("/notify", notificationAction(customAction));
     };
 
     return {
         currentAddress: currentAddress,
-        addHealthCheck: addHealthCheck,
-        addNotifyEndpoint: addNotifyEndpoint
+        registerHealthCheckEndpoint: registerHealthCheckEndpoint,
+        registerNotificationEndpoint: registerNotificationEndpoint
     };
 };
 
