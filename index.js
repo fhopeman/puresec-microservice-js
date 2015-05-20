@@ -22,6 +22,13 @@ var utils = function() {
         }
     };
 
+    return {
+        currentAddress: currentAddress
+    };
+};
+
+var webApp = function() {
+
     var healthCheckAction = function(customAction) {
         // provide the health check function which is used from nodejs health check endpoint
         // and add custom action to it
@@ -66,7 +73,6 @@ var utils = function() {
     };
 
     return {
-        currentAddress: currentAddress,
         registerHealthCheckEndpoint: registerHealthCheckEndpoint,
         registerNotificationEndpoint: registerNotificationEndpoint
     };
@@ -141,5 +147,6 @@ var master = function(masterUrl) {
 
 module.exports = {
     utils: utils,
-    master: master
+    master: master,
+    webApp: webApp
 };

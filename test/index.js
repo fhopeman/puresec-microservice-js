@@ -43,8 +43,12 @@ describe("utils", function(){
             assert.equal(utils.currentAddress(), undefined);
         });
     });
+});
 
-    describe("health check registration", function() {
+describe("webApp", function(){
+    var webApp = testee.webApp();
+
+    describe("health check endpoint registration", function() {
         it("should add application endpoint /health", function() {
             // given
             var app = {
@@ -53,7 +57,7 @@ describe("utils", function(){
             var appSpy = sinon.spy(app, "get");
 
             // when
-            utils.registerHealthCheckEndpoint(app);
+            webApp.registerHealthCheckEndpoint(app);
 
             // then
             assert(appSpy.withArgs("/health", sinon.match.func).calledOnce);
@@ -71,7 +75,7 @@ describe("utils", function(){
             };
 
             // when
-            utils.registerHealthCheckEndpoint(app, customActionSpy);
+            webApp.registerHealthCheckEndpoint(app, customActionSpy);
 
             // then
             assert(customActionSpy.calledOnce);
@@ -87,7 +91,7 @@ describe("utils", function(){
             };
 
             // when
-            utils.registerHealthCheckEndpoint(app, undefined);
+            webApp.registerHealthCheckEndpoint(app, undefined);
 
             // then
             // nothing to check, will fail if undefined would be executed
@@ -103,7 +107,7 @@ describe("utils", function(){
             var appSpy = sinon.spy(app, "post");
 
             // when
-            utils.registerNotificationEndpoint(app);
+            webApp.registerNotificationEndpoint(app);
 
             // then
             assert(appSpy.withArgs("/notify", sinon.match.func).calledOnce);
@@ -121,7 +125,7 @@ describe("utils", function(){
             };
 
             // when
-            utils.registerNotificationEndpoint(app, customActionSpy);
+            webApp.registerNotificationEndpoint(app, customActionSpy);
 
             // then
             assert(customActionSpy.calledOnce);
@@ -137,7 +141,7 @@ describe("utils", function(){
             };
 
             // when
-            utils.registerNotificationEndpoint(app, undefined);
+            webApp.registerNotificationEndpoint(app, undefined);
 
             // then
             // nothing to check, will fail if undefined would be executed
