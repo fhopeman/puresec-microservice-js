@@ -94,6 +94,56 @@ describe("utils", function(){
         });
     });
 
+    describe("notify endpoint registration", function() {
+        it("should add application endpoint /notify", function() {
+            // given
+            var app = {
+                post: function () {}
+            };
+            var appSpy = sinon.spy(app, "post");
+
+            // when
+            utils.addNotifyEndpoint(app);
+
+            // then
+            assert(appSpy.withArgs("/notify", sinon.match.func).calledOnce);
+        });
+
+        it("should set up notify body and call custom callback", function() {
+            // given
+            var customCallbackSpy = sinon.spy();
+            var res = {send: function() {}};
+            var resSpy = sinon.spy(res, "send");
+            var app = {
+                post: function(path, notifyBody) {
+                    notifyBody({}, res);
+                }
+            };
+
+            // when
+            utils.addNotifyEndpoint(app, customCallbackSpy);
+
+            // then
+            assert(customCallbackSpy.calledOnce);
+            assert(resSpy.withArgs("OK").calledOnce);
+        });
+
+        it("should set up notify body and don't call custom callback if undefined", function() {
+            // given
+            var app = {
+                post: function(path, notifyBody) {
+                    notifyBody({}, {send: function() {}});
+                }
+            };
+
+            // when
+            utils.addNotifyEndpoint(app, undefined);
+
+            // then
+            // nothing to check, will fail if undefined would be executed
+        });
+    });
+
 });
 
 describe("master", function(){

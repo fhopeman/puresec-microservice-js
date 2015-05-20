@@ -44,9 +44,32 @@ var utils = function() {
         app.get("/health", healthCheckBody(customCallback));
     };
 
+    var notifyBody = function(customCallback) {
+        // enhance the notification api with a custom
+        // callback
+        return function(req, res) {
+            if (customCallback) {
+                customCallback(req, res);
+            }
+            res.send("OK");
+        };
+    };
+
+    /**
+     * Adds a notification endpoint.
+     *
+     * @param app nodejs application.
+     * @param customCallback optional callback which will be executed if
+     *                       the notification is received.
+     */
+    var addNotifyEndpoint = function(app, customCallback) {
+        app.post("/notify", notifyBody(customCallback));
+    };
+
     return {
         currentAddress: currentAddress,
-        addHealthCheck: addHealthCheck
+        addHealthCheck: addHealthCheck,
+        addNotifyEndpoint: addNotifyEndpoint
     };
 };
 
