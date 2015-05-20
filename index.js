@@ -107,8 +107,36 @@ var master = function(masterUrl) {
         });
     };
 
+    /**
+     * Notifies the master.
+     *
+     * @param options following options are available:
+     *                - registrationId: has to be provided as unique id
+     *                - onSuccess (optional): on success callback function.
+     *                - onError (optional): on error callback function.
+     */
+    var notify = function(options) {
+        request.post({
+            uri: masterUrl + "/alarm/notify",
+            form: {
+                detector_id: options.registrationId
+            }
+        }, function(error, _, body) {
+            if (!error) {
+                if (options.onSuccess) {
+                    options.onSuccess(JSON.parse(body));
+                }
+            } else {
+                if (options.onError) {
+                    options.onError(error);
+                }
+            }
+        });
+    };
+
     return {
-        register: register
+        register: register,
+        notify: notify
     };
 };
 

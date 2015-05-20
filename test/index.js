@@ -149,37 +149,66 @@ describe("utils", function(){
 describe("master", function(){
     var master = testee.master("http://some/url/to/master");
 
-    var defaultOptions = {
-        type: "handler",
-        name: "some name",
-        description: "some descr",
-        address: "http://some/client/address",
-        onSuccess: undefined,
-        onError: undefined
-    };
-
     afterEach(function () {
         request.post.restore();
     });
 
-    it("should register a client and call success callback", function(done){
-        sinon.stub(request, "post").yields(null, null, JSON.stringify({id: "7"}));
-
-        defaultOptions.onSuccess = function(jsonBody) {
-            assert.equal(jsonBody.id, 7);
-            done();
+    describe("registration", function() {
+        var registrationDefaultOptions = {
+            type: "handler",
+            name: "some name",
+            description: "some descr",
+            address: "http://some/client/address",
+            onSuccess: undefined,
+            onError: undefined
         };
-        master.register(defaultOptions);
+
+        it("should register a client and call success callback", function(done){
+            sinon.stub(request, "post").yields(null, null, JSON.stringify({id: "7"}));
+
+            registrationDefaultOptions.onSuccess = function(jsonBody) {
+                assert.equal(jsonBody.id, 7);
+                done();
+            };
+            master.register(registrationDefaultOptions);
+        });
+
+        it("should call onError callback if error occurs", function(done){
+            sinon.stub(request, "post").yields({error: "connect ECONNREFUSED"}, null, null);
+
+            registrationDefaultOptions.onError = function(error) {
+                assert.equal(error.error, "connect ECONNREFUSED");
+                done();
+            };
+            master.register(registrationDefaultOptions);
+        });
     });
 
-    it("should call onError callback if error occurs", function(done){
-        sinon.stub(request, "post").yields({error: "connect ECONNREFUSED"}, null, null);
-
-        defaultOptions.onError = function(error) {
-            assert.equal(error.error, "connect ECONNREFUSED");
-            done();
+    describe("notification", function() {
+        var notificationDefaultOptions = {
+            registrationId: 13,
+            onSuccess: undefined,
+            onError: undefined
         };
-        master.register(defaultOptions);
-    });
+        it("should notify the master and call success callback", function(done){
+            sinon.stub(request, "post").yields(null, null, JSON.stringify({notified: [7, 9]}));
 
+            notificationDefaultOptions.onSuccess = function(jsonBody) {
+                assert.equal(jsonBody.notified[0], 7);
+                assert.equal(jsonBody.notified[1], 9);
+                done();
+            };
+            master.notify(notificationDefaultOptions);
+        });
+
+        it("should call onError callback if error occurs", function(done){
+            sinon.stub(request, "post").yields({error: "connect ECONNREFUSED"}, null, null);
+
+            notificationDefaultOptions.onError = function(error) {
+                assert.equal(error.error, "connect ECONNREFUSED");
+                done();
+            };
+            master.notify(notificationDefaultOptions);
+        });
+    });
 });
