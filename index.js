@@ -29,11 +29,11 @@ var utils = function() {
 
 var webApp = function() {
 
-    var healthCheckAction = function(customAction) {
+    var _healthCheckAction = function(customAction) {
         // provide the health check function which is used from nodejs health check endpoint
         // and add custom action to it
         return function(req, res) {
-            if (customAction) {
+            if (!!customAction) {
                 customAction(req, res);
             }
             res.send("UP");
@@ -48,13 +48,13 @@ var webApp = function() {
      *                     the health check is called.
      */
     var registerHealthCheckEndpoint = function(app, customAction) {
-        app.get("/health", healthCheckAction(customAction));
+        app.get("/health", _healthCheckAction(customAction));
     };
 
-    var notificationAction = function(customAction) {
+    var _notificationAction = function(customAction) {
         // enhance the notification api with a custom action
         return function(req, res) {
-            if (customAction) {
+            if (!!customAction) {
                 customAction(req, res);
             }
             res.send("OK");
@@ -69,7 +69,7 @@ var webApp = function() {
      *                     the notification is received.
      */
     var registerNotificationEndpoint = function(app, customAction) {
-        app.post("/notify", notificationAction(customAction));
+        app.post("/notify", _notificationAction(customAction));
     };
 
     return {
@@ -101,11 +101,11 @@ var master = function(masterUrl) {
             }
         }, function (error, _, body) {
             if (!error) {
-                if (options.onSuccess) {
+                if (!!options.onSuccess) {
                     options.onSuccess(JSON.parse(body));
                 }
             } else {
-                if (options.onError) {
+                if (!!options.onError) {
                     options.onError(error);
                 }
             }
@@ -128,11 +128,11 @@ var master = function(masterUrl) {
             }
         }, function(error, _, body) {
             if (!error) {
-                if (options.onSuccess) {
+                if (!!options.onSuccess) {
                     options.onSuccess(JSON.parse(body));
                 }
             } else {
-                if (options.onError) {
+                if (!!options.onError) {
                     options.onError(error);
                 }
             }
