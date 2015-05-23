@@ -1,4 +1,4 @@
-var os = require('os');
+var os = require("os");
 var request = require("request");
 
 var utils = function() {
@@ -15,7 +15,7 @@ var utils = function() {
 
             for (var i = 0; i < iface.length; i++) {
                 var name = iface[i];
-                if (name.address !== '127.0.0.1' && name.family === 'IPv4' && !name.internal) {
+                if (name.address !== "127.0.0.1" && name.family === "IPv4" && !name.internal) {
                     return "http://" + name.address;
                 }
             }
