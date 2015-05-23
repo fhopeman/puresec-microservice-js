@@ -8,7 +8,7 @@ var utils = function() {
      *
      * @returns IPv4 address.
      */
-    var currentAddress = function() {
+    var currentAddress = function(port) {
         var networkInterfaces = os.networkInterfaces( );
         for (var networkInterface in networkInterfaces) {
             var iface = networkInterfaces[networkInterface];
@@ -16,7 +16,7 @@ var utils = function() {
             for (var i = 0; i < iface.length; i++) {
                 var name = iface[i];
                 if (name.address !== "127.0.0.1" && name.family === "IPv4" && !name.internal) {
-                    return "http://" + name.address;
+                    return "http://" + name.address + ":" + port;
                 }
             }
         }

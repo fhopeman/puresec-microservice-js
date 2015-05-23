@@ -26,7 +26,7 @@ describe("utils", function(){
                     ]}
             );
 
-            assert.equal(utils.currentAddress(), "http://192.168.0.7");
+            assert.equal(utils.currentAddress(9), "http://192.168.0.7:9");
         });
 
         it("shouldn't return network address if no external IPv4 is available", function(){
@@ -40,7 +40,7 @@ describe("utils", function(){
                     ]}
             );
 
-            assert.equal(utils.currentAddress(), undefined);
+            assert.equal(utils.currentAddress(9), undefined);
         });
     });
 });
